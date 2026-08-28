@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Adaptive Authentication Demo</title>
+<style>
+  body { font-family: sans-serif; max-width: 420px; margin: 60px auto; }
+  input { display: block; width: 100%; padding: 8px; margin: 8px 0; box-sizing: border-box; }
+  button { padding: 8px 16px; cursor: pointer; }
+  #message { margin-top: 16px; padding: 10px; border-radius: 6px; }
+  .error { background: #fdd; color: #900; }
+  .success { background: #dfd; color: #060; }
+  .info { background: #ffd; color: #660; }
+  #otpSection { display: none; margin-top: 20px; border-top: 1px solid #ccc; padding-top: 16px; }
+</style>
+</head>
+<body>
+
+<h2>Adaptive Authentication Demo</h2>
+
+<h3>Register</h3>
+<input id="regUsername" placeholder="Username">
+<input id="regPassword" placeholder="Password" type="password">
+<button onclick="register()">Register</button>
+
+<h3>Login</h3>
+<input id="loginUsername" placeholder="Username">
+<input id="loginPassword" placeholder="Password" type="password">
+<button onclick="login()">Login</button>
+
+<div id="otpSection">
+  <h3>Enter OTP</h3>
+  <input id="otpInput" placeholder="Enter OTP">
+  <button onclick="verifyOtp()">Verify OTP</button>
+</div>
+
+
+<div id="message"></div>
+
+<script>
+const API = "http://127.0.0.1:8000";
+
+function showMessage(text, type) {
+  const el = document.getElementById("message");
+  el.textContent = text;
+  el.className = type;
+}
+
+async function register() {
+  const username = document.getElementById("regUsername").value;
+  const password = document.getElementById("regPassword").value;
+
+  const res = await fetch(`${API}/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password })
+  });
+  const data = await res.json();
+  showMessage(data.message || data.detail, res.ok ? "success" : "error");
+}
+
+async function login() {
+  const username = document.getElementById("loginUsername").value;
+  const password = document.getElementById("loginPassword").value;
+
+  const res = await fetch(`${API}/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password })
+  });
+  const data = await res.json();
+
+  if (!res.ok) {
+    showMessage(data.detail, "error");
+    document.getElementById("otpSection").style.display = "none";
+    return;
+  }
+
+  if (data.status === "otp_required") {
+    document.getElementById("otpSection").style.display = "block";
+    window.otpUsername = username;
+    showMessage("Too many recent failures — OTP verification required.", "info");
+
+    // Open OTP in a popup, simulating an SMS/email delivery screen
+    const popup = window.open("", "OTP Popup", "width=350,height=200");
+    popup.document.write(`
+      <html>
+      <head><title>OTP Delivery</title></head>
+      <body style="font-family:sans-serif; text-align:center; padding-top:40px;">
+        <h3>Your OTP</h3>
+        <p style="font-size:28px; font-weight:bold; letter-spacing:2px;">${data.demo_otp}</p>
+        <p style="color:gray; font-size:12px;">(Simulated SMS/email delivery)</p>
+      </body>
+      </html>
+    `);
+  } else if (data.status === "granted") {
+    document.getElementById("otpSection").style.display = "none";
+    showMessage(`Login successful. Session key: ${data.session_key}`, "success");
+  }
+}
+
+async function verifyOtp() {
+  const otp = document.getElementById("otpInput").value;
+  const username = window.otpUsername;
+
+  const res = await fetch(`${API}/verify-otp`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, otp })
+  });
+  const data = await res.json();
+
+  if (!res.ok) {
+    showMessage(data.detail, "error");
+    return;
+  }
+
+  showMessage(`OTP verified. Session key: ${data.session_key}`, "success");
+  document.getElementById("otpSection").style.display = "none";
+}
+</script>
+
+</body>
+</html>
