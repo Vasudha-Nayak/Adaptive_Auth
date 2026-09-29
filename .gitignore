@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+keys/
+face_models/
+venv/
+.env
