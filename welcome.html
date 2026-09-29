@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Adaptive Login</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="wrap">
+    <div class="card center">
+      <h1>Adaptive Login</h1>
+      <p class="subtitle">3-factor adaptive authentication — password, email OTP, and a live face check — with post-quantum signed sessions.</p>
+      <a class="btn" href="{{ url_for('login') }}">Log in</a>
+      <div class="row-btns">
+        <a class="btn secondary" href="{{ url_for('register') }}">Create an account</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

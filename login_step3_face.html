@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login — Step 3 — Face Verification</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="steps">
+        <div class="dot done"></div>
+        <div class="dot done"></div>
+        <div class="dot active"></div>
+      </div>
+      <h1>Face verification</h1>
+      <p class="subtitle">Step 3 of 3 — look at the camera and hold still.</p>
+
+      {% if remaining is not none %}
+        <div class="flash error">
+          Face did not match{{ ' (' + reason + ')' if reason else '' }}. {{ remaining }} attempt(s) remaining before lockout.
+        </div>
+      {% endif %}
+
+      <div class="camera-box">
+        <video id="webcam" autoplay playsinline muted></video>
+        <div class="ring" id="ring"></div>
+      </div>
+
+      <div class="progress-track" style="margin-top:16px;"><div class="progress-fill" id="progressFill"></div></div>
+      <p class="status-line" id="statusLine">Loading your face model…</p>
+
+      <div class="row-btns">
+        <button class="btn" id="scanBtn" disabled>Preparing…</button>
+      </div>
+
+      <p class="footnote">Verified client-side against your personal Teachable Machine model, then confidence-checked by the server.</p>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8.5/dist/teachablemachine-image.min.js"></script>
+  <script>
+    window.FACE_LOGIN_CONFIG = {
+      modelURL: {{ url_for('face_model_file', owner_id=user_id, filename='model.json')|tojson }},
+      metadataURL: {{ url_for('face_model_file', owner_id=user_id, filename='metadata.json')|tojson }},
+      challenge: {{ challenge|tojson }},
+      submitURL: {{ url_for('login_face')|tojson }},
+      faceLabel: {{ face_label|tojson }},
+      framesPerScan: 8,
+      frameIntervalMs: 150
+    };
+  </script>
+  <script src="{{ url_for('static', filename='js/face_login.js') }}"></script>
+</body>
+</html>

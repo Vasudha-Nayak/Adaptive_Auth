@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Logged in</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="wrap">
+    <div class="card center">
+      <span class="badge good">All 3 factors verified</span>
+      <h1>Welcome, {{ username }}</h1>
+      <p class="subtitle">Password + email OTP + face match all succeeded. A fresh session key was generated and signed with CRYSTALS-Dilithium3.</p>
+
+      <div class="key-box">{{ session_key }}</div>
+
+      <div class="row-btns">
+        <a class="btn" href="{{ url_for('verify_session_visual') }}">View signature verification demo</a>
+      </div>
+      <div class="row-btns">
+        <a class="btn secondary" href="{{ url_for('logout') }}">Log out</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

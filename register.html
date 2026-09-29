@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Register — Step 1</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="steps">
+        <div class="dot active"></div>
+        <div class="dot"></div>
+      </div>
+      <h1>Create your account</h1>
+      <p class="subtitle">Step 1 of 2 — account details. Next you'll enroll your face.</p>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, msg in messages %}
+          <div class="flash {{ category }}">{{ msg }}</div>
+        {% endfor %}
+      {% endwith %}
+
+      <form method="POST" action="{{ url_for('register') }}">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required autocomplete="username">
+
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="xyz@company.com" required autocomplete="email">
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required autocomplete="new-password">
+
+        <button type="submit" class="btn">Continue to face enrollment</button>
+      </form>
+
+      <p class="footnote">Password: at least 8 characters, one uppercase letter, one digit. Email must end in @{{ config.ALLOWED_EMAIL_DOMAIN }}.</p>
+
+      <div class="link-row">Already have an account? <a href="{{ url_for('login') }}">Log in</a></div>
+    </div>
+  </div>
+</body>
+</html>

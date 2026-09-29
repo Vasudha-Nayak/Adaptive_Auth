@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Account Locked</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="wrap">
+    <div class="card center">
+      <span class="badge warn">Account locked</span>
+      <h1>Too many failed attempts</h1>
+      <p class="subtitle">
+        This account has been locked for security. To unlock it for testing, run the SQL
+        in the project README under "To manually unlock a locked test account".
+      </p>
+      <a class="btn" href="{{ url_for('welcome') }}">Back to start</a>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login — Step 2</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="steps">
+        <div class="dot done"></div>
+        <div class="dot active"></div>
+        <div class="dot"></div>
+      </div>
+      <h1>Verify your email</h1>
+      <p class="subtitle">Step 2 of 3 — an OTP was sent to <strong>{{ email }}</strong>.</p>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, msg in messages %}
+          <div class="flash {{ category }}">{{ msg }}</div>
+        {% endfor %}
+      {% endwith %}
+
+      {% if demo_otp %}
+        <div class="demo-otp">
+          <div class="code">{{ demo_otp }}</div>
+          <small>DEMO POPUP — in production this would be emailed, not shown here</small>
+        </div>
+      {% endif %}
+
+      <form method="POST" action="{{ url_for('login_otp') }}">
+        <label for="otp">Enter OTP</label>
+        <input type="text" id="otp" name="otp" inputmode="numeric" maxlength="6" required>
+        <input type="hidden" name="action" value="verify">
+        <button type="submit" class="btn">Verify</button>
+      </form>
+
+      <form method="POST" action="{{ url_for('login_otp') }}" style="margin-top:10px;">
+        <input type="hidden" name="action" value="resend">
+        <button type="submit" class="btn secondary">Resend OTP</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

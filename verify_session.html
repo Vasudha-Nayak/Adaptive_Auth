@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Verify Session Signature</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="wrap wide">
+    <div class="card">
+      <h1>Verify Session — Quantum-Resistant</h1>
+      <p class="subtitle">Dilithium3 signature check on your live session key.</p>
+
+      <label>Session key</label>
+      <div class="key-box">{{ session_key }}</div>
+
+      <label>Signature (first 64 hex chars)</label>
+      <div class="key-box">{{ signature[:64] }}… ({{ signature|length }} chars total)</div>
+
+      {% if result is not none %}
+        <div class="flash {{ 'success' if result else 'error' }}" style="margin-top:16px;">
+          {{ '✅ VALID' if result else '❌ INVALID' }}{{ ' (tampered key)' if tampered else '' }}
+        </div>
+      {% endif %}
+
+      <form method="POST" action="{{ url_for('verify_session') }}" style="margin-top:16px;">
+        <button type="submit" class="btn">Re-verify real signature</button>
+      </form>
+      <form method="POST" action="{{ url_for('verify_session') }}">
+        <input type="hidden" name="tamper" value="1">
+        <button type="submit" class="btn danger">Simulate tampering &amp; verify</button>
+      </form>
+
+      <div class="link-row">
+        <a href="{{ url_for('verify_session_visual') }}">Open the animated visual demo</a> ·
+        <a href="{{ url_for('welcome') }}">Home</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

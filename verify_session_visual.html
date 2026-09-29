@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Session Signature — Visual Demo</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <style>
+    .flow { display:flex; align-items:center; gap:8px; margin:20px 0; flex-wrap:wrap; font-size:0.82rem; }
+    .flow .node { background:#0e1421; border:1px solid var(--card-border); border-radius:10px; padding:10px 12px; }
+    .flow .arrow { color: var(--muted); }
+    #result { margin-top: 16px; }
+  </style>
+</head>
+<body>
+  <div class="wrap wide">
+    <div class="card">
+      <h1>Session Key → Sign → Verify</h1>
+      <p class="subtitle">Algorithm: {{ algo }} (NIST security level 3)</p>
+
+      <div class="flow">
+        <div class="node">Session Key</div>
+        <span class="arrow">→</span>
+        <div class="node">SHA-256 digest</div>
+        <span class="arrow">→</span>
+        <div class="node">Dilithium3.sign(private key)</div>
+        <span class="arrow">→</span>
+        <div class="node">Signature</div>
+        <span class="arrow">→</span>
+        <div class="node">Dilithium3.verify(public key)</div>
+        <span class="arrow">→</span>
+        <div class="node" id="resultNode">Result</div>
+      </div>
+
+      <label>Session key digest (SHA-256)</label>
+      <div class="key-box" id="digestBox">{{ digest }}</div>
+
+      <label>Signature (preview)</label>
+      <div class="key-box" id="sigBox">{{ signature_preview }}… ({{ signature_len }} bytes hex-encoded)</div>
+
+      <label>Public key (preview)</label>
+      <div class="key-box">{{ public_key_preview }}…</div>
+
+      <div class="row-btns">
+        <button class="btn" id="verifyBtn">Re-verify (live)</button>
+        <button class="btn danger" id="tamperBtn">Simulate tampering</button>
+      </div>
+
+      <div id="result"></div>
+
+      <div class="link-row"><a href="{{ url_for('welcome') }}">Home</a></div>
+    </div>
+  </div>
+
+  <script>
+    async function callVerify(tamper) {
+      const resultEl = document.getElementById("result");
+      resultEl.innerHTML = '<p class="status-line">Verifying…</p>';
+      const res = await fetch("{{ url_for('api_verify_session') }}", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tamper: !!tamper }),
+      });
+      const data = await res.json();
+      if (data.error) {
+        resultEl.innerHTML = `<div class="flash error">${data.error}</div>`;
+        return;
+      }
+      document.getElementById("digestBox").textContent = data.digest;
+      document.getElementById("sigBox").textContent = data.signature_preview + "…";
+      const cls = data.valid ? "success" : "error";
+      const label = data.valid ? "✅ VALID" : "❌ INVALID";
+      resultEl.innerHTML = `<div class="flash ${cls}">${label}${data.tampered ? " — key was tampered with, avalanche effect changed the digest" : ""}</div>`;
+    }
+
+    document.getElementById("verifyBtn").addEventListener("click", () => callVerify(false));
+    document.getElementById("tamperBtn").addEventListener("click", () => callVerify(true));
+  </script>
+</body>
+</html>
