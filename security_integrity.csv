@@ -1,0 +1,2 @@
+backend,valid_signature,modified_message_rejected,modified_signature_rejected,wrong_public_key_rejected,keygen_time_s,sign_time_s,verify_time_s,keygen_time_ms,sign_time_ms,verify_time_ms,public_key_bytes,secret_key_bytes,signature_bytes
+pqcrypto,True,True,True,True,0.0003125000002910383,0.011300699999992503,0.00021350000042730244,0.3125000002910383,11.300699999992503,0.21350000042730244,1952,4032,3309

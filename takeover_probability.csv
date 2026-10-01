@@ -1,0 +1,3 @@
+scenario,probability
+Static Password Only,0.01
+Adaptive Password + OTP + Face,1e-05

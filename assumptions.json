@@ -1,0 +1,19 @@
+{
+    "password_hash_method": "pbkdf2:sha256",
+    "face_threshold": 0.9,
+    "network_rtt_seconds": 0.05,
+    "human_time_seconds": {
+        "password": 6.0,
+        "otp": 15.0,
+        "face": 3.0
+    },
+    "client_face_time_seconds": {
+        "model_load": 1.2,
+        "predict": 0.15
+    },
+    "password_vocabulary": 1000000,
+    "number_of_users": 200000,
+    "attack_attempt_budget": 10000,
+    "mailbox_access_probability": 0.05,
+    "default_face_far": 0.02
+}

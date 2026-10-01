@@ -1,0 +1,7 @@
+feature,static_system,adaptive_system
+Adaptive authentication,No,Yes
+OTP after failed attempts,No,Yes
+Face verification,No,Yes
+Fresh session key,No,Yes
+Post-quantum signature,No,Yes
+Account lockout,Optional,Yes

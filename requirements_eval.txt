@@ -1,0 +1,9 @@
+numpy
+pandas
+matplotlib
+werkzeug
+psutil
+# one Dilithium backend (whichever your dilithium_utils.py uses):
+dilithium-py
+liboqs-python   
+pqcrypto      

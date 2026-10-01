@@ -1,0 +1,7 @@
+scenario,server_time_ms
+Static - Normal Login,785.9829874999605
+Adaptive - Normal Login,796.4791249999553
+Adaptive - 1 OTP Retry,796.479300499941
+Adaptive - 1 Face Retry,796.4792864999436
+Static - 3 Wrong Passwords,2357.9489624998814
+Adaptive - 3 Wrong Passwords,2357.9489624998814
